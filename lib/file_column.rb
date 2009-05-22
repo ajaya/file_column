@@ -301,7 +301,11 @@ module FileColumn # :nodoc:
     def get_content_type(fallback=nil)
       if options[:file_exec]
         begin
+          if RUBY_PLATFORM.eql?('universal-darwin9.0')                                                                                        
+            content_type = `#{options[:file_exec]} -bI "#{File.join(@dir,@filename)}"`.chomp
+          else
           content_type = `#{options[:file_exec]} -bi "#{File.join(@dir,@filename)}"`.chomp
+          end
           content_type = fallback unless $?.success?
           content_type.gsub!(/;.+$/,"") if content_type
           content_type
